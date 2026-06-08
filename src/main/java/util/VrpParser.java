@@ -15,7 +15,6 @@ public class VrpParser {
         String[] lines = content.split("\n");
 
         String name = "";
-        int dimension = 0;
         int capacity = 0;
         List<Node> nodes = new ArrayList<>();
         int depotId = 1;
@@ -27,25 +26,21 @@ public class VrpParser {
 
             if (line.startsWith("NAME")) {
                 name = line.split(":")[1].trim();
-            } else if (line.startsWith("DIMENSION")) {
-                dimension = Integer.parseInt(line.split(":")[1].trim());
             } else if (line.startsWith("CAPACITY")) {
                 capacity = Integer.parseInt(line.split(":")[1].trim());
             } else if (line.equals("NODE_COORD_SECTION")) {
-                // Parse node coordinates
                 while (i < lines.length && !lines[i].trim().isEmpty() && !lines[i].trim().startsWith("DEMAND_SECTION")) {
                     String[] parts = lines[i].trim().split("\\s+");
                     if (parts.length >= 3) {
                         int id = Integer.parseInt(parts[0]);
                         double x = Double.parseDouble(parts[1]);
                         double y = Double.parseDouble(parts[2]);
-                        nodes.add(new Node(id, x, y, 0));  // demand set to 0 initially
+                        nodes.add(new Node(id, x, y, 0));
                     }
                     i++;
                 }
-                i--;  // Back up one line as we may have exited early
+                i--;
             } else if (line.equals("DEMAND_SECTION")) {
-                // Parse demands
                 while (i < lines.length && !lines[i].trim().isEmpty() && !lines[i].trim().startsWith("DEPOT_SECTION")) {
                     String[] parts = lines[i].trim().split("\\s+");
                     if (parts.length >= 2) {
@@ -62,7 +57,6 @@ public class VrpParser {
                 }
                 i--;
             } else if (line.equals("DEPOT_SECTION")) {
-                // Usually just one depot with ID 1
                 while (i < lines.length && !lines[i].trim().isEmpty() && !lines[i].trim().equals("-1")) {
                     String[] parts = lines[i].trim().split("\\s+");
                     if (parts.length >= 1) {
@@ -73,7 +67,6 @@ public class VrpParser {
             }
         }
 
-        // Find depot node
         Node depot = null;
         List<Node> customers = new ArrayList<>();
         for (Node node : nodes) {
@@ -88,7 +81,7 @@ public class VrpParser {
             depot = nodes.get(0);
         }
 
-        // Compute distance matrix with depot at index 0, customers at 1..n
+        // Compute distance matrix
         List<Node> allNodes = new ArrayList<>();
         allNodes.add(depot);
         allNodes.addAll(customers);

@@ -31,7 +31,6 @@ public class AcoSolver implements Solver {
     public Solution solve(CVRPInstance instance, int iterations) {
         int n = instance.nodes.size();
 
-        // Initialize pheromone matrix - same size as distance matrix (depot + customers)
         double[][] pheromone = new double[n + 1][n + 1];
         double initialPheromone = 0.1;
         for (int i = 0; i <= n; i++) {
@@ -82,7 +81,6 @@ public class AcoSolver implements Solver {
         boolean[] visited = new boolean[maxNodeId + 1];  // Size to accommodate all node IDs
         List<Integer> tour = new ArrayList<>();
 
-        // Start from depot.
         int currentIdx = 0;
         int currentDemand = 0;
 
@@ -90,15 +88,14 @@ public class AcoSolver implements Solver {
             int nextCustomer = selectNextCustomer(instance, pheromone, visited, currentDemand, currentIdx);
 
             if (nextCustomer == -1) {
-                // No feasible customer found from the current route position.
-                // Close the route and start a new one from the depot.
+                // No feasible customer
                 currentIdx = 0;
                 currentDemand = 0;
                 continue;
             }
 
             tour.add(nextCustomer);
-            visited[nextCustomer] = true;  // nextCustomer is nodeId, use directly
+            visited[nextCustomer] = true;
             int nextIdx = getMatrixIndex(instance, nextCustomer);
             if (nextIdx >= 0) {
                 currentIdx = nextIdx;
@@ -130,13 +127,11 @@ public class AcoSolver implements Solver {
             }
 
             Node customer = instance.nodes.get(i);
-            // Check if adding this customer exceeds capacity
             if (currentDemand + customer.demand > instance.vehicleCapacity) {
                 probabilities[i] = 0;
                 continue;
             }
 
-            // Matrix index: depot is 0, customers at 1..n
             int matrixIdx = i + 1;
             double ph = Math.pow(pheromone[currentIdx][matrixIdx], alpha);
             double dist = instance.distanceMatrix[currentIdx][matrixIdx];
@@ -164,14 +159,12 @@ public class AcoSolver implements Solver {
 
     private void updatePheromone(CVRPInstance instance, double[][] pheromone, List<Solution> antSolutions,
                                  double[] antDistances, int n) {
-        // Evaporation
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= n; j++) {
                 pheromone[i][j] *= (1.0 - evaporation);
             }
         }
 
-        // Deposit pheromone from best ants
         double bestDistance = Double.MAX_VALUE;
         for (double dist : antDistances) {
             bestDistance = Math.min(bestDistance, dist);
@@ -187,7 +180,7 @@ public class AcoSolver implements Solver {
                         continue;
                     }
 
-                    int previousIdx = 0; // depot
+                    int previousIdx = 0;
                     for (int i = 0; i < route.size(); i++) {
                         int nodeId = route.get(i);
                         int currentIdx = getMatrixIndex(instance, nodeId);
@@ -198,7 +191,6 @@ public class AcoSolver implements Solver {
                         }
                     }
 
-                    // Reinforce the return to depot.
                     if (previousIdx >= 0) {
                         pheromone[previousIdx][0] += depositAmount;
                         pheromone[0][previousIdx] += depositAmount;
@@ -214,7 +206,7 @@ public class AcoSolver implements Solver {
         }
         for (int i = 0; i < instance.nodes.size(); i++) {
             if (instance.nodes.get(i).id == nodeId) {
-                return i + 1;  // Offset by 1 because depot is at 0
+                return i + 1;
             }
         }
         return -1;

@@ -97,8 +97,7 @@ public class PsoSolver implements Solver {
             }
         }
 
-        Solution bestSolution = RouteBuilder.buildSolutionFromPermutation(bestGlobal, instance);
-        return bestSolution;
+        return RouteBuilder.buildSolutionFromPermutation(bestGlobal, instance);
     }
 
     private void applySwapMoves(int[] particle, int[] bestParticle, int[] bestGlobal) {
@@ -172,9 +171,7 @@ public class PsoSolver implements Solver {
 
     private int[] getRandomPermutation(int[] customerIds) {
         int[] perm = new int[customerIds.length];
-        for (int i = 0; i < customerIds.length; i++) {
-            perm[i] = customerIds[i];
-        }
+        System.arraycopy(customerIds, 0, perm, 0, customerIds.length);
 
         // Fisher-Yates shuffle
         for (int i = perm.length - 1; i > 0; i--) {

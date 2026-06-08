@@ -36,7 +36,6 @@ public final class ResultsWriter {
             writer.write("iterations: " + iterations + System.lineSeparator());
             writer.write("totalDistance: " + String.format(Locale.US, "%.2f", solution.totalDistance) + System.lineSeparator());
             writer.write("vehicleCount: " + solution.vehicleCount + System.lineSeparator());
-            writer.write("feasible: " + solution.isFeasible + System.lineSeparator());
             writer.write("runtimeMs: " + runtimeMs + System.lineSeparator());
             writer.write(System.lineSeparator());
             writer.write("parameters:" + System.lineSeparator());
@@ -69,9 +68,6 @@ public final class ResultsWriter {
             writer.write('\t');
             writer.write("vehicleCount=");
             writer.write(Integer.toString(solution.vehicleCount));
-            writer.write('\t');
-            writer.write("feasible=");
-            writer.write(Boolean.toString(solution.isFeasible));
             writer.write('\t');
             writer.write("runtimeMs=");
             writer.write(Long.toString(runtimeMs));

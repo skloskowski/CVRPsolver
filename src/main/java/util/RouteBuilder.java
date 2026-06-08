@@ -13,8 +13,7 @@ public class RouteBuilder {
     /**
      * Converts a permutation of customer IDs into routes.
      *
-     * The permutation is treated as a giant tour and split into capacity-feasible routes using
-     * dynamic programming so the partitioning is optimal for the fixed customer order.
+     * The permutation is treated as a tour and split into capacity-feasible routes
      */
     public static Solution buildSolutionFromPermutation(int[] permutation, CVRPInstance instance) {
         Solution solution = new Solution();
@@ -30,7 +29,6 @@ public class RouteBuilder {
             solution.routes.addAll(optimalRoutes);
         }
 
-        // Evaluate solution
         SolutionEvaluator.evaluate(solution, instance);
         return solution;
     }
