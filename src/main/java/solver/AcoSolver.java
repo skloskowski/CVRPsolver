@@ -71,14 +71,13 @@ public class AcoSolver implements Solver {
 
     private int[] buildAntTour(CVRPInstance instance, double[][] pheromone) {
         int n = instance.nodes.size();
-        // Find max node ID to size visited array properly
         int maxNodeId = 0;
         for (Node node : instance.nodes) {
             maxNodeId = Math.max(maxNodeId, node.id);
         }
         maxNodeId = Math.max(maxNodeId, instance.depot.id);
         
-        boolean[] visited = new boolean[maxNodeId + 1];  // Size to accommodate all node IDs
+        boolean[] visited = new boolean[maxNodeId + 1];
         List<Integer> tour = new ArrayList<>();
 
         int currentIdx = 0;
@@ -88,7 +87,6 @@ public class AcoSolver implements Solver {
             int nextCustomer = selectNextCustomer(instance, pheromone, visited, currentDemand, currentIdx);
 
             if (nextCustomer == -1) {
-                // No feasible customer
                 currentIdx = 0;
                 currentDemand = 0;
                 continue;
@@ -141,7 +139,7 @@ public class AcoSolver implements Solver {
         }
 
         if (sum == 0) {
-            return -1;  // No feasible customer
+            return -1;
         }
 
         // Roulette wheel selection
